@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { fetchCaseById, isSupabaseConfigured } from '../lib/supabase';
 import { getEnrichedCases, demoFollowups, demoNews } from '../lib/demoData';
 
 const STATUS_MAP = {
@@ -15,19 +16,53 @@ const STATUS_ORDER = ['complaint_registered', 'investigation_started', 'evidence
 
 export default function CaseDetailPage() {
   const { caseId } = useParams();
+  const [caseData, setCaseData] = useState(null);
+  const [followups, setFollowups] = useState([]);
+  const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const caseData = useMemo(() => {
-    const all = getEnrichedCases();
-    return all.find(c => c.case_id === caseId);
+  useEffect(() => {
+    async function loadCase() {
+      setLoading(true);
+      if (isSupabaseConfigured()) {
+        const { data, error } = await fetchCaseById(caseId);
+        if (data && !error) {
+          setCaseData({
+            ...data,
+            station: data.fir?.police_stations || data.officers?.police_stations || {},
+            officer: data.officers || {}
+          });
+          setFollowups(data.case_followups || []);
+          setNews(data.news_articles || []);
+        } else {
+          loadDemo();
+        }
+      } else {
+        loadDemo();
+      }
+      setLoading(false);
+    }
+
+    function loadDemo() {
+      const all = getEnrichedCases();
+      const match = all.find(c => c.case_id === caseId);
+      if (match) {
+        setCaseData(match);
+        setFollowups(demoFollowups.filter(f => f.case_id === caseId).sort((a, b) => new Date(a.followup_date) - new Date(b.followup_date)));
+        setNews(demoNews.filter(n => n.case_id === caseId));
+      }
+    }
+
+    loadCase();
   }, [caseId]);
 
-  const followups = useMemo(() => {
-    return demoFollowups.filter(f => f.case_id === caseId).sort((a, b) => new Date(a.followup_date) - new Date(b.followup_date));
-  }, [caseId]);
-
-  const news = useMemo(() => {
-    return demoNews.filter(n => n.case_id === caseId);
-  }, [caseId]);
+  if (loading) {
+    return (
+      <div className="page-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+        <div className="animate-pulse" style={{ color: 'var(--secondary)', fontWeight: 700 }}>Decrypting Sovereign Records...</div>
+      </div>
+    );
+  }
 
   if (!caseData) {
     return (

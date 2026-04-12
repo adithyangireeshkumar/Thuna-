@@ -1,18 +1,22 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { getEnrichedCases, demoStations } from '../lib/demoData';
+import { useData } from '../context/DataContext';
 
 export default function HomePage() {
+  const { cases, stations, loading } = useData();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [stationFilter, setStationFilter] = useState('');
   const [crimeFilter, setCrimeFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
 
-  const enrichedCases = getEnrichedCases();
+  const enrichedCases = cases;
   const totalCases = enrichedCases.length;
   const activeCases = enrichedCases.filter(c => !['case_closed'].includes(c.case_status)).length;
-  const todayCases = 3; // Simulated
+  const todayCases = enrichedCases.filter(c => {
+    const today = new Date().toISOString().split('T')[0];
+    return c.created_at?.startsWith(today) || c.fir?.fir_date === today;
+  }).length || 0;
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -55,7 +59,7 @@ export default function HomePage() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.5rem', padding: '0.5rem' }}>
                 <select className="select-field" value={stationFilter} onChange={(e) => setStationFilter(e.target.value)} style={{ height: '2.75rem', fontSize: '0.875rem' }}>
                   <option value="">Police Station</option>
-                  {demoStations.map(s => (
+                  {stations.map(s => (
                     <option key={s.station_id} value={s.station_id}>{s.station_name.replace(' Police Station', '')}</option>
                   ))}
                 </select>

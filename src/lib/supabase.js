@@ -9,8 +9,61 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
  * Helper: Check if Supabase is properly configured
  */
 export const isSupabaseConfigured = () => {
-  return supabaseUrl !== 'https://your-project.supabase.co' && supabaseAnonKey !== 'your-anon-key';
+  return supabaseUrl !== 'https://your-project.supabase.co' && 
+         supabaseAnonKey !== 'your-anon-key' &&
+         !supabaseUrl.includes('your-project-id');
 };
+
+/**
+ * Fetch all cases with joined FIR and Officer data
+ */
+export const fetchCases = async (filters = {}) => {
+  if (!isSupabaseConfigured()) return { data: null, error: 'Supabase not configured' };
+
+  let query = supabase
+    .from('cases')
+    .select(`
+      *,
+      fir (*),
+      officers (officer_name, rank, badge_number)
+    `);
+
+  if (filters.status) query = query.eq('case_status', filters.status);
+  
+  const { data, error } = await query.order('created_at', { ascending: false });
+  return { data, error };
+};
+
+/**
+ * Fetch a single case by ID with all details
+ */
+export const fetchCaseById = async (caseId) => {
+  if (!isSupabaseConfigured()) return { data: null, error: 'Supabase not configured' };
+
+  const { data, error } = await supabase
+    .from('cases')
+    .select(`
+      *,
+      fir (*, police_stations(*)),
+      officers (*, police_stations(*)),
+      case_followups (*),
+      news_articles (*)
+    `)
+    .eq('case_id', caseId)
+    .single();
+
+  return { data, error };
+};
+
+/**
+ * Fetch all police stations
+ */
+export const fetchStations = async () => {
+  if (!isSupabaseConfigured()) return { data: null, error: 'Supabase not configured' };
+  const { data, error } = await supabase.from('police_stations').select('*').order('station_name');
+  return { data, error };
+};
+
 /**
  * Helper: Submit a public report/complaint
  */

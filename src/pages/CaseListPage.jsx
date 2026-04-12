@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { getEnrichedCases, demoStations } from '../lib/demoData';
+import { useData } from '../context/DataContext';
 
 const STATUS_MAP = {
   complaint_registered: { label: 'Complaint Filed', className: 'badge-warning' },
@@ -14,13 +14,14 @@ const STATUS_MAP = {
 const ITEMS_PER_PAGE = 10;
 
 export default function CaseListPage() {
+  const { cases, stations, loading } = useData();
   const [searchParams] = useSearchParams();
   const [search, setSearch] = useState(searchParams.get('q') || '');
   const [crimeFilter, setCrimeFilter] = useState(searchParams.get('crime') || '');
   const [statusFilter, setStatusFilter] = useState(searchParams.get('status') || '');
   const [currentPage, setCurrentPage] = useState(1);
 
-  const enrichedCases = useMemo(() => getEnrichedCases(), []);
+  const enrichedCases = cases;
 
   const filtered = useMemo(() => {
     return enrichedCases.filter(c => {
@@ -144,7 +145,13 @@ export default function CaseListPage() {
                 </tr>
               </thead>
               <tbody>
-                {paginated.map((c) => {
+                {loading ? (
+                  <tr>
+                    <td colSpan={6} style={{ textAlign: 'center', padding: '3rem' }}>
+                      <div className="animate-pulse" style={{ color: 'var(--secondary)', fontWeight: 700 }}>Querying Sovereign Archive...</div>
+                    </td>
+                  </tr>
+                ) : paginated.map((c) => {
                   const st = STATUS_MAP[c.case_status] || STATUS_MAP.complaint_registered;
                   return (
                     <tr key={c.case_id}>
