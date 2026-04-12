@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
@@ -12,7 +12,7 @@ import ReportPage from './pages/ReportPage';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <AuthProvider>
         <Navbar />
         <Routes>
@@ -26,6 +26,6 @@ export default function App() {
         </Routes>
         <Footer />
       </AuthProvider>
-    </BrowserRouter>
+    </Router>
   );
 }
