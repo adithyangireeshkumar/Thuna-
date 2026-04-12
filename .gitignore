@@ -32,3 +32,6 @@ dist-ssr
 stitch_thuna_crime_transparency_portal.zip
 stitch_thuna_crime_transparency_portal/
 stitch_ui_designs/
+
+# Agents & Skills
+.agents/
