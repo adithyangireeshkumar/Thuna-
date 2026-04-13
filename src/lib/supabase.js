@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://pyrcokjbkwmnzhryhwiq.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB5cmNva2pia3dtbnpocnlod2lxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMDU2NjYsImV4cCI6MjA5MTU4MTY2Nn0.oHzR-uW3bi_P1x9s5ryu7ZJYRbUbASxBTCK8pFRUTYo';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -10,8 +10,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
  */
 export const isSupabaseConfigured = () => {
   return supabaseUrl !== 'https://your-project.supabase.co' && 
-         supabaseAnonKey !== 'your-anon-key' &&
-         !supabaseUrl.includes('your-project-id');
+         supabaseAnonKey !== 'your-anon-key';
 };
 
 /**
