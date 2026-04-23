@@ -1,0 +1,70 @@
+@import url("https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&family=Public+Sans:wght@400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.92)),
+    linear-gradient(120deg, rgba(17, 40, 79, 0.08), transparent 36%),
+    linear-gradient(0deg, rgba(234, 215, 164, 0.14), transparent 42%);
+}
+
+.dark body {
+  background-image:
+    linear-gradient(rgba(12, 21, 37, 0.94), rgba(12, 21, 37, 0.98)),
+    linear-gradient(120deg, rgba(234, 215, 164, 0.06), transparent 36%),
+    linear-gradient(0deg, rgba(79, 110, 173, 0.06), transparent 42%);
+}
+
+html[data-language="en"] .lang-ml {
+  display: none !important;
+}
+
+html[data-language="ml"] .lang-en {
+  display: none !important;
+}
+
+html[data-language="en"] .lang-stack,
+html[data-language="ml"] .lang-stack {
+  gap: 0 !important;
+}
+
+::selection {
+  background: rgba(17, 40, 79, 0.16);
+}
+
+@layer components {
+  .portal-card {
+    @apply rounded-2xl border border-line bg-white/90 shadow-panel backdrop-blur-sm dark:border-darkLine dark:bg-darkPanel/90 dark:shadow-none;
+  }
+
+  .section-kicker {
+    @apply text-xs font-bold uppercase tracking-[0.32em] text-policeMuted dark:text-slate-300;
+  }
+
+  .value-label {
+    @apply text-[11px] font-bold uppercase tracking-[0.28em] text-slateText dark:text-slate-400;
+  }
+
+  .lang-stack {
+    @apply flex flex-col gap-1;
+  }
+
+  .lang-en {
+    @apply font-sans;
+  }
+
+  .lang-ml {
+    @apply font-malayalam leading-relaxed text-slateText dark:text-slate-400;
+  }
+
+  .interactive-ring {
+    @apply transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-police focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-copperSoft dark:focus-visible:ring-offset-darkPanel;
+  }
+}

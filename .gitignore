@@ -1,37 +1,9 @@
-# Logs
-logs
+.next/
+node_modules/
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# Environment files
+thuna-dev.out.log
+thuna-dev.err.log
+source_ui/
 .env
 .env.*
 !.env.example
-
-# Design Artifacts & Exports
-stitch_thuna_crime_transparency_portal.zip
-stitch_thuna_crime_transparency_portal/
-stitch_ui_designs/
-
-# Agents & Skills
-.agents/
